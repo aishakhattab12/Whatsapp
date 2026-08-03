@@ -3,78 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>التطبيق - الشات</title>
+  <title>محادثة</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="chat-body">
 
-  <div class="chat-container">
-    <!-- هيدر الشات -->
+  <div class="app-container">
     <header class="chat-header">
       <div class="user-info">
-        <div class="avatar"><i class="fa-solid fa-user"></i></div>
-        <div>
-          <h3>محادثة مباشرة</h3>
-          <span id="status-indicator" class="status-offline">جاري الاتصال...</span>
+        <div class="avatar">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <div class="status-container">
+          <span class="contact-name">المحادثة</span>
+          <span id="status-indicator" class="status-offline">غير متصل</span>
         </div>
       </div>
       <div class="header-actions">
-        <button type="button" id="search-toggle-btn" title="بحث"><i class="fa-solid fa-search"></i></button>
-        <button type="button" id="theme-toggle-btn" title="تغيير الثيم"><i class="fa-solid fa-moon"></i></button>
-        <button type="button" id="logout-btn" title="خروج"><i class="fa-solid fa-right-from-bracket"></i></button>
+        <button id="logout-btn" type="button" title="تسجيل خروج">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
       </div>
     </header>
 
-    <!-- شريط البحث المخفي -->
-    <div id="search-container" class="search-container hidden">
-      <input type="text" id="search-input" placeholder="ابحث في الرسائل...">
-      <button type="button" id="close-search-btn"><i class="fa-solid fa-xmark"></i></button>
+    <main id="chat-messages" class="chat-messages">
+    </main>
+
+    <div id="typing-indicator" class="typing-indicator hidden">
+      <span>جاري الكتابة...</span>
     </div>
 
-    <!-- بنر الرسالة المثبتة -->
-    <div id="pinned-banner" class="pinned-banner hidden">
-      <i class="fa-solid fa-thumbtack"></i>
-      <span id="pinned-text"></span>
-      <button type="button" id="close-pinned-btn"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-
-    <!-- منطقة عرض الرسائل -->
-    <div id="chat-messages" class="chat-messages"></div>
-
-    <!-- مؤشر الكتابة -->
-    <div id="typing-indicator" class="typing-indicator hidden">يكتب الآن...</div>
-
-    <!-- معاينة الرد على رسالة -->
-    <div id="reply-preview" class="reply-preview hidden">
-      <span id="reply-preview-text"></span>
-      <button type="button" id="cancel-reply-btn"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-
-    <!-- شريط إدخال الرسائل -->
-    <form id="chat-form" class="chat-form">
-      <button type="button" id="emoji-btn" class="icon-btn"><i class="fa-regular fa-face-smile"></i></button>
-      
-      <!-- لوحة الإيموجي -->
-      <div id="emoji-picker" class="emoji-picker hidden">
-        <span class="emoji-item">❤️</span>
-        <span class="emoji-item">👍</span>
-        <span class="emoji-item">😂</span>
-        <span class="emoji-item">🔥</span>
-        <span class="emoji-item">😢</span>
-        <span class="emoji-item">👏</span>
-        <span class="emoji-item">🎉</span>
-        <span class="emoji-item">🙏</span>
-      </div>
-
-      <label for="file-input" class="icon-btn" style="cursor: pointer;"><i class="fa-solid fa-paperclip"></i></label>
-      <input type="file" id="file-input" class="hidden">
-
-      <input type="text" id="message-input" placeholder="اكتب رسالة..." autocomplete="off">
-      
-      <button type="button" id="mic-btn" class="icon-btn"><i class="fa-solid fa-microphone"></i></button>
-      <button type="submit" id="send-btn" class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
-    </form>
+    <footer class="chat-footer">
+      <form id="chat-form" autocomplete="off">
+        <div class="input-wrapper">
+          <input type="text" id="message-input" placeholder="اكتب رسالة..." required>
+        </div>
+        <button type="submit" id="send-btn" title="إرسال">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </form>
+    </footer>
   </div>
 
   <script type="module" src="script.js"></script>
