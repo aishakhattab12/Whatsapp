@@ -1,69 +1,62 @@
 :root {
-  --bg-color: #0b141a;
-  --card-bg: #111b21;
+  --bg-primary: #111b21;
+  --bg-secondary: #202c33;
+  --bg-panel: #222d34;
   --text-primary: #e9edef;
   --text-secondary: #8696a0;
-  --accent-color: #00a884;
-  --accent-hover: #008f72;
+  --accent-green: #00a884;
+  --accent-green-hover: #008f6f;
+  --bubble-sent: #005c4b;
+  --bubble-received: #202c33;
+  --border-color: #2f3b43;
   --error-color: #f15c6d;
-  --border-color: #222d34;
-}
-
-[data-theme="light"] {
-  --bg-color: #efeae2;
-  --card-bg: #ffffff;
-  --text-primary: #111b21;
-  --text-secondary: #667781;
-  --accent-color: #00a884;
-  --accent-hover: #008f72;
-  --error-color: #df3333;
-  --border-color: #e2e8f0;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
 }
 
 body {
-  background-color: var(--bg-color);
+  background-color: var(--bg-primary);
   color: var(--text-primary);
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
-.hidden {
-  display: none !important;
-}
-
-/* تصميم كارد تسجيل الدخول */
 .login-body {
-  background: linear-gradient(135deg, var(--accent-color), var(--bg-color));
+  background: linear-gradient(135deg, #0b141a 0%, #111b21 100%);
 }
 
 .login-card {
-  background-color: var(--card-bg);
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  background-color: var(--bg-secondary);
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
   width: 100%;
   max-width: 400px;
   text-align: center;
+  border: 1px solid var(--border-color);
 }
 
 .login-icon {
-  font-size: 40px;
-  color: var(--accent-color);
-  margin-bottom: 15px;
+  font-size: 50px;
+  color: var(--accent-green);
+  margin-bottom: 20px;
 }
 
 .login-card h2 {
-  margin-bottom: 10px;
-  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
 .login-subtitle {
@@ -74,7 +67,7 @@ body {
 
 .input-group {
   position: relative;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .input-group i {
@@ -88,16 +81,34 @@ body {
 .input-group input {
   width: 100%;
   padding: 12px 45px 12px 15px;
-  background-color: var(--bg-color);
+  background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: 15px;
   outline: none;
+  transition: border-color 0.3s;
 }
 
 .input-group input:focus {
-  border-color: var(--accent-color);
+  border-color: var(--accent-green);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--accent-green);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+  background-color: var(--accent-green-hover);
 }
 
 .error-msg {
@@ -106,48 +117,41 @@ body {
   margin-bottom: 15px;
 }
 
-.login-btn {
-  width: 100%;
-  padding: 12px;
-  background-color: var(--accent-color);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
+.hidden {
+  display: none !important;
 }
 
-.login-btn:hover {
-  background-color: var(--accent-hover);
+.chat-body {
+  background-color: #0c1317;
 }
 
-/* تصميم الشات */
-.chat-container {
+.app-container {
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
   height: 100vh;
-  background-color: var(--card-bg);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  background-color: var(--bg-primary);
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
 }
 
-@media(min-width: 768px) {
-  .chat-container {
-    height: 90vh;
-    border-radius: 12px;
+@media (min-width: 900px) {
+  .app-container {
+    height: 95vh;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   }
 }
 
 .chat-header {
-  padding: 15px 20px;
-  background-color: var(--card-bg);
-  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  padding: 10px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
 }
 
 .user-info {
@@ -167,13 +171,14 @@ body {
   color: var(--text-secondary);
 }
 
-.user-info h3 {
-  font-size: 16px;
+.status-container {
+  display: flex;
+  flex-direction: column;
 }
 
-.status-online {
-  font-size: 12px;
-  color: var(--accent-color);
+.contact-name {
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .status-offline {
@@ -181,171 +186,161 @@ body {
   color: var(--text-secondary);
 }
 
-.header-actions {
-  display: flex;
-  gap: 15px;
+.status-online {
+  font-size: 12px;
+  color: var(--accent-green);
 }
 
-.header-actions button, .icon-btn {
+.header-actions button {
   background: none;
   border: none;
   color: var(--text-secondary);
   font-size: 18px;
   cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-.header-actions button:hover, .icon-btn:hover {
+.header-actions button:hover {
+  background-color: var(--border-color);
   color: var(--text-primary);
-}
-
-.search-container {
-  padding: 10px 20px;
-  background-color: var(--bg-color);
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.search-container input {
-  flex: 1;
-  padding: 8px 12px;
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  color: var(--text-primary);
-}
-
-.pinned-banner {
-  padding: 8px 15px;
-  background-color: var(--bg-color);
-  border-bottom: 1px solid var(--border-color);
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--accent-color);
-}
-
-.pinned-banner span {
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .chat-messages {
-  flex: 1;
+  flex: 1 1 auto;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-color: #0b141a;
   padding: 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  background-color: var(--bg-color);
+  gap: 8px;
+  min-height: 0;
 }
 
 .message {
   max-width: 65%;
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 8px;
   position: relative;
+  word-wrap: break-word;
+  font-size: 14.5px;
+  box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  word-break: break-word;
 }
 
 .message.sent {
-  background-color: #005c4b;
-  color: #fff;
+  background-color: var(--bubble-sent);
   align-self: flex-end;
-  border-top-left-radius: 8px;
   border-top-right-radius: 0;
 }
 
-[data-theme="light"] .message.sent {
-  background-color: #d9fdd3;
-  color: #111b21;
-}
-
 .message.received {
-  background-color: var(--card-bg);
-  color: var(--text-primary);
+  background-color: var(--bubble-received);
   align-self: flex-start;
   border-top-left-radius: 0;
-  border-top-right-radius: 8px;
-  border: 1px solid var(--border-color);
+}
+
+.message-text {
+  margin-bottom: 4px;
+  line-height: 1.4;
 }
 
 .message-meta {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
   font-size: 11px;
   color: var(--text-secondary);
   align-self: flex-end;
-  display: flex;
-  align-items: center;
-  gap: 3px;
 }
 
-.ticks.read {
-  color: #53bdeb;
-}
-
-.chat-form {
-  padding: 12px 20px;
-  background-color: var(--card-bg);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-top: 1px solid var(--border-color);
-  position: relative;
-}
-
-.chat-form input[type="text"] {
-  flex: 1;
-  padding: 10px 15px;
-  background-color: var(--bg-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-primary);
-  outline: none;
-}
-
-.send-btn {
-  background-color: var(--accent-color);
-  color: white;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.emoji-picker {
+.message-actions {
   position: absolute;
-  bottom: 70px;
-  right: 20px;
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  padding: 10px;
-  border-radius: 8px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  top: 5px;
+  left: 5px;
+  display: none;
+  gap: 5px;
+  background: rgba(0,0,0,0.6);
+  padding: 2px 5px;
+  border-radius: 4px;
 }
 
-.emoji-item {
+.message:hover .message-actions {
+  display: flex;
+}
+
+.message-actions button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 11px;
   cursor: pointer;
-  font-size: 20px;
-  text-align: center;
+}
+
+.message-actions button:hover {
+  color: var(--accent-green);
 }
 
 .typing-indicator {
-  padding: 5px 20px;
+  padding: 4px 16px;
   font-size: 12px;
-  color: var(--accent-color);
-  background-color: var(--bg-color);
-  }
+  color: var(--accent-green);
+  background-color: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.chat-footer {
+  background-color: var(--bg-secondary);
+  padding: 10px 16px;
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+#chat-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-wrapper {
+  flex: 1;
+  background-color: var(--bg-primary);
+  border-radius: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--border-color);
+}
+
+.input-wrapper input {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 10px 0;
+  color: var(--text-primary);
+  font-size: 15px;
+  outline: none;
+}
+
+#send-btn {
+  background-color: var(--accent-green);
+  color: #fff;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+#send-btn:hover {
+  background-color: var(--accent-green-hover);
+    }
+  
