@@ -16,21 +16,21 @@
     <h2>تسجيل الدخول</h2>
     <p class="login-subtitle">الرجاء إدخال بيانات الحساب للمتابعة</p>
 
-    <form id="login-form">
+    <div id="login-form">
       <div class="input-group">
         <i class="fa-solid fa-user"></i>
-        <input type="text" id="username" placeholder="اسم المستخدم" required autocomplete="off">
+        <input type="text" id="username" placeholder="اسم المستخدم" autocomplete="off">
       </div>
 
       <div class="input-group">
         <i class="fa-solid fa-lock"></i>
-        <input type="password" id="password" placeholder="كلمة المرور" required>
+        <input type="password" id="password" placeholder="كلمة المرور">
       </div>
 
       <div id="error-msg" class="error-msg hidden">اسم المستخدم أو كلمة المرور غير صحيحة.</div>
 
-      <button type="submit" class="login-btn">دخول</button>
-    </form>
+      <button type="button" id="login-btn-action" class="login-btn">دخول</button>
+    </div>
   </div>
 
   <script type="module" src="script.js"></script>
