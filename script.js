@@ -29,20 +29,25 @@ if (currentUser && isChatPage && "Notification" in window) {
 const savedTheme = localStorage.getItem("chat_theme") || "dark";
 document.body.setAttribute("data-theme", savedTheme);
 
-const loginForm = document.getElementById("login-form");
-if (loginForm) {
-  loginForm.addEventListener("submit", (e) => {
-    e.preventDefault(); // منع إعادة تحميل الصفحة أو إضافة ? للرابط
+const loginBtnAction = document.getElementById("login-btn-action");
+if (loginBtnAction) {
+  loginBtnAction.addEventListener("click", () => {
     const usernameInput = document.getElementById("username").value.trim().toLowerCase();
     const passwordInput = document.getElementById("password").value;
     const errorMsg = document.getElementById("error-msg");
 
     if (VALID_USERS[usernameInput] && VALID_USERS[usernameInput] === passwordInput) {
       localStorage.setItem("chat_user", usernameInput);
-      // توجيه صريح لصفحة chat.html
       window.location.href = "chat.html";
     } else {
       if (errorMsg) errorMsg.classList.remove("hidden");
+    }
+  });
+
+  // السماح بالدخول عبر زر Enter
+  document.getElementById("password").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      loginBtnAction.click();
     }
   });
 }
@@ -77,7 +82,6 @@ if (currentUser && isChatPage) {
   let isRecording = false;
   let lastMessageCount = 0;
 
-  // أصوات الإرسال والاستقبال عبر Audio API افتراضيًا لتفادي ملفات خارجية
   const playSound = (type) => {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -99,7 +103,6 @@ if (currentUser && isChatPage) {
     } catch (e) {}
   };
 
-  // تبديل الثيم
   if (themeToggleBtn) {
     themeToggleBtn.addEventListener("click", () => {
       const currentTheme = document.body.getAttribute("data-theme");
@@ -113,7 +116,6 @@ if (currentUser && isChatPage) {
     }
   }
 
-  // البحث
   if (searchToggleBtn && searchContainer) {
     searchToggleBtn.addEventListener("click", () => {
       searchContainer.classList.toggle("hidden");
@@ -143,7 +145,6 @@ if (currentUser && isChatPage) {
     });
   }
 
-  // تسجيل الخروج والحالة
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       const myStatusRef = ref(db, `status/${currentUser}`);
@@ -178,7 +179,6 @@ if (currentUser && isChatPage) {
     }
   });
 
-  // مؤشر الكتابة المتقدم
   const myTypingRef = ref(db, `typing/${currentUser}`);
   let typingTimeout;
 
@@ -209,7 +209,6 @@ if (currentUser && isChatPage) {
     }
   });
 
-  // إيموجي
   if (emojiBtn && emojiPicker) {
     emojiBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -228,7 +227,6 @@ if (currentUser && isChatPage) {
     });
   }
 
-  // الرد على الرسائل
   if (cancelReplyBtn) {
     cancelReplyBtn.addEventListener("click", () => {
       replyingTo = null;
@@ -236,7 +234,6 @@ if (currentUser && isChatPage) {
     });
   }
 
-  // الرسالة المثبتة
   const pinnedRef = ref(db, "pinnedMessage");
   onValue(pinnedRef, (snapshot) => {
     const pId = snapshot.val();
@@ -262,7 +259,6 @@ if (currentUser && isChatPage) {
     });
   }
 
-  // إرسال الملفات والصور
   if (fileInput) {
     fileInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
@@ -300,7 +296,6 @@ if (currentUser && isChatPage) {
     });
   }
 
-  // تسجيل الصوت
   if (micBtn) {
     micBtn.addEventListener("click", async () => {
       if (!isRecording) {
@@ -356,7 +351,6 @@ if (currentUser && isChatPage) {
     });
   }
 
-  // إرسال رسالة نصية
   const sendMessage = () => {
     if (!messageInput) return;
     const text = messageInput.value.trim();
@@ -400,7 +394,6 @@ if (currentUser && isChatPage) {
     });
   }
 
-  // الاستماع للرسائل ومنع إعادة الرسم الكامل بأداء عالٍ
   const messagesRef = ref(db, "messages");
   onValue(messagesRef, (snapshot) => {
     if (!chatMessages) return;
@@ -567,4 +560,7 @@ if (currentUser && isChatPage) {
         dropdown.classList.add("hidden");
       });
 
-      messageDiv
+      messageDiv.querySelector(".edit-action")?.addEventListener("click", () => {
+        const newText = prompt("تعديل الرسالة:", msg.text);
+        if (newText !== null && newText.trim() !== "") {
+          update(ref(db, `messages/${msg.id}`), { tex
