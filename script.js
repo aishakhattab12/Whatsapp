@@ -18,6 +18,36 @@ if (currentUser && isIndexPage) {
   window.location.replace("chat.html");
 }
 
+// معالجة تسجيل الدخول وضمان عمل الزر تماماً
+document.addEventListener("DOMContentLoaded", () => {
+  const loginBtn = document.getElementById("login-btn-action");
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+  const errorMsg = document.getElementById("error-msg");
+
+  if (loginBtn) {
+    loginBtn.addEventListener("click", () => {
+      const user = usernameInput.value.trim().toLowerCase();
+      const pass = passwordInput.value;
+
+      if (VALID_USERS[user] && VALID_USERS[user] === pass) {
+        localStorage.setItem("chat_user", user);
+        window.location.href = "chat.html";
+      } else {
+        if (errorMsg) errorMsg.classList.remove("hidden");
+      }
+    });
+
+    if (passwordInput) {
+      passwordInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          loginBtn.click();
+        }
+      });
+    }
+  }
+});
+
 // طلب إذن الإشعارات عند أول دخول
 if (currentUser && isChatPage && "Notification" in window) {
   if (Notification.permission === "default") {
@@ -28,29 +58,6 @@ if (currentUser && isChatPage && "Notification" in window) {
 // إدارة الثيم (فاتح/داكن)
 const savedTheme = localStorage.getItem("chat_theme") || "dark";
 document.body.setAttribute("data-theme", savedTheme);
-
-const loginBtnAction = document.getElementById("login-btn-action");
-if (loginBtnAction) {
-  loginBtnAction.addEventListener("click", () => {
-    const usernameInput = document.getElementById("username").value.trim().toLowerCase();
-    const passwordInput = document.getElementById("password").value;
-    const errorMsg = document.getElementById("error-msg");
-
-    if (VALID_USERS[usernameInput] && VALID_USERS[usernameInput] === passwordInput) {
-      localStorage.setItem("chat_user", usernameInput);
-      window.location.href = "chat.html";
-    } else {
-      if (errorMsg) errorMsg.classList.remove("hidden");
-    }
-  });
-
-  // السماح بالدخول عبر زر Enter
-  document.getElementById("password").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      loginBtnAction.click();
-    }
-  });
-}
 
 if (currentUser && isChatPage) {
   const chatForm = document.getElementById("chat-form");
@@ -561,6 +568,4 @@ if (currentUser && isChatPage) {
       });
 
       messageDiv.querySelector(".edit-action")?.addEventListener("click", () => {
-        const newText = prompt("تعديل الرسالة:", msg.text);
-        if (newText !== null && newText.trim() !== "") {
-          update(ref(db, `messages/${msg.id}`), { tex
+        const newText = prompt("تعديل الرسالة
