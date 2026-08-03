@@ -32,14 +32,15 @@ document.body.setAttribute("data-theme", savedTheme);
 const loginForm = document.getElementById("login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+    e.preventDefault(); // منع إعادة تحميل الصفحة أو إضافة ? للرابط
     const usernameInput = document.getElementById("username").value.trim().toLowerCase();
     const passwordInput = document.getElementById("password").value;
     const errorMsg = document.getElementById("error-msg");
 
     if (VALID_USERS[usernameInput] && VALID_USERS[usernameInput] === passwordInput) {
       localStorage.setItem("chat_user", usernameInput);
-      window.location.replace("chat.html");
+      // توجيه صريح لصفحة chat.html
+      window.location.href = "chat.html";
     } else {
       if (errorMsg) errorMsg.classList.remove("hidden");
     }
@@ -241,7 +242,6 @@ if (currentUser && isChatPage) {
     const pId = snapshot.val();
     pinnedMessageId = pId;
     if (pId) {
-      // جلب نص الرسالة المثبتة
       get(ref(db, `messages/${pId}`)).then((snap) => {
         const msg = snap.val();
         if (msg) {
@@ -415,14 +415,12 @@ if (currentUser && isChatPage) {
       ...data[key]
     })).sort((a, b) => a.timestamp - b.timestamp);
 
-    // تحديث حالة "تم القراءة" للرسائل الواردة غير المقروءة
     messagesArray.forEach(msg => {
       if (msg.sender !== currentUser && !msg.seen) {
         update(ref(db, `messages/${msg.id}`), { seen: true });
       }
     });
 
-    // إرسال إشعار للطرف الآخر عند وصول رسالة جديدة
     if (messagesArray.length > lastMessageCount && lastMessageCount > 0) {
       const lastMsg = messagesArray[messagesArray.length - 1];
       if (lastMsg.sender !== currentUser) {
@@ -437,12 +435,10 @@ if (currentUser && isChatPage) {
     }
     lastMessageCount = messagesArray.length;
 
-    // إعادة بناء DOM بكفاءة أو تحديثه
     chatMessages.innerHTML = "";
     let lastDateStr = "";
 
     messagesArray.forEach((msg) => {
-      // فواصل التواريخ
       const msgDate = new Date(msg.timestamp).toLocaleDateString();
       if (msgDate !== lastDateStr) {
         lastDateStr = msgDate;
@@ -464,7 +460,6 @@ if (currentUser && isChatPage) {
 
       let innerContent = "";
 
-      // صندوق الرد إن وجد
       if (msg.replyTo) {
         innerContent += `
           <div class="replied-box" data-id="${msg.replyTo.id}">
@@ -474,7 +469,6 @@ if (currentUser && isChatPage) {
         `;
       }
 
-      // عرض الميديا أو النص
       if (msg.deleted) {
         innerContent += `<div class="message-text" style="font-style:italic; color:var(--text-secondary);">تم حذف الرسالة</div>`;
       } else {
@@ -490,7 +484,6 @@ if (currentUser && isChatPage) {
         }
       }
 
-      // علامات القراءة والوقت والتعديل
       let ticksHtml = "";
       if (msg.sender === currentUser) {
         if (msg.seen) {
@@ -510,7 +503,6 @@ if (currentUser && isChatPage) {
         </div>
       `;
 
-      // تفاعلات الـ Reactions
       if (msg.reactions) {
         let reactionsHtml = `<div class="reactions-bar">`;
         Object.keys(msg.reactions).forEach(emoji => {
@@ -520,7 +512,6 @@ if (currentUser && isChatPage) {
         innerContent += reactionsHtml;
       }
 
-      // زر الخيارات للرسائل
       innerContent += `
         <button type="button" class="message-actions-trigger"><i class="fa-solid fa-chevron-down"></i></button>
         <div class="message-dropdown hidden">
@@ -534,7 +525,6 @@ if (currentUser && isChatPage) {
 
       messageDiv.innerHTML = innerContent;
 
-      // ربط الأحداث للقائمة المنبثقة
       const triggerBtn = messageDiv.querySelector(".message-actions-trigger");
       const dropdown = messageDiv.querySelector(".message-dropdown");
 
@@ -546,7 +536,6 @@ if (currentUser && isChatPage) {
         dropdown.classList.toggle("hidden");
       });
 
-      // زر الرد
       messageDiv.querySelector(".reply-action")?.addEventListener("click", () => {
         replyingTo = { id: msg.id, text: msg.text || "ميديا", sender: msg.sender };
         replyPreviewText.textContent = `رد على: ${replyingTo.text}`;
@@ -555,7 +544,6 @@ if (currentUser && isChatPage) {
         messageInput.focus();
       });
 
-      // الانتقال للرسالة الأصلية عند الضغط على الرد
       messageDiv.querySelector(".replied-box")?.addEventListener("click", () => {
         const targetId = msg.replyTo.id;
         const targetEl = document.getElementById(`msg-${targetId}`);
@@ -566,6 +554,17 @@ if (currentUser && isChatPage) {
         }
       });
 
-      // زر التفاعل (React)
       messageDiv.querySelector(".react-action")?.addEventListener("click", () => {
-       
+        const emoji = prompt("اختر إيموجي للتفاعل (❤️, 👍, 😂, 🔥):", "❤️");
+        if (emoji) {
+          update(ref(db, `messages/${msg.id}/reactions`), { [currentUser]: emoji });
+        }
+        dropdown.classList.add("hidden");
+      });
+
+      messageDiv.querySelector(".pin-action")?.addEventListener("click", () => {
+        set(pinnedRef, msg.id);
+        dropdown.classList.add("hidden");
+      });
+
+      messageDiv
