@@ -7,19 +7,22 @@ const VALID_USERS = {
 
 const currentUser = localStorage.getItem("chat_user");
 const currentPath = window.location.pathname;
-const isIndexPage = currentPath.endsWith("index.html") || currentPath === "/" || currentPath.endsWith("/");
-const isChatPage = currentPath.endsWith("chat.html");
+
+// تحديد نوع الصفحة بدقة لتجنب أي حلقات توجيه (Redirect Loops) على GitHub Pages
+const isIndexPage = currentPath.endsWith("index.html") || currentPath.endsWith("/") || (!currentPath.includes("chat.html") && !currentPath.includes("index.html"));
+const isChatPage = currentPath.includes("chat.html");
 
 if (!currentUser && isChatPage) {
-  window.location.href = "index.html";
+  window.location.replace("index.html");
 }
 
 if (currentUser && isIndexPage) {
-  window.location.href = "chat.html";
+  window.location.replace("chat.html");
 }
 
+// معالجة نموذج تسجيل الدخول
 const loginForm = document.getElementById("login-form");
-if (loginForm && isIndexPage) {
+if (loginForm) {
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const usernameInput = document.getElementById("username").value.trim().toLowerCase();
@@ -28,13 +31,14 @@ if (loginForm && isIndexPage) {
 
     if (VALID_USERS[usernameInput] && VALID_USERS[usernameInput] === passwordInput) {
       localStorage.setItem("chat_user", usernameInput);
-      window.location.href = "chat.html";
+      window.location.replace("chat.html");
     } else {
-      errorMsg.classList.remove("hidden");
+      if (errorMsg) errorMsg.classList.remove("hidden");
     }
   });
 }
 
+// معالجة واجهة الشات
 if (currentUser && isChatPage) {
   const chatForm = document.getElementById("chat-form");
   const messageInput = document.getElementById("message-input");
@@ -43,16 +47,15 @@ if (currentUser && isChatPage) {
   const statusIndicator = document.getElementById("status-indicator");
   const typingIndicator = document.getElementById("typing-indicator");
 
-  logoutBtn.addEventListener("click", () => {
-    const myStatusRef = ref(db, `status/${currentUser}`);
-    set(myStatusRef, false).then(() => {
-      localStorage.removeItem("chat_user");
-      window.location.href = "index.html";
-    }).catch(() => {
-      localStorage.removeItem("chat_user");
-      window.location.href = "index.html";
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      const myStatusRef = ref(db, `status/${currentUser}`);
+      set(myStatusRef, false).finally(() => {
+        localStorage.removeItem("chat_user");
+        window.location.replace("index.html");
+      });
     });
-  });
+  }
 
   const myStatusRef = ref(db, `status/${currentUser}`);
   set(myStatusRef, true);
@@ -62,25 +65,29 @@ if (currentUser && isChatPage) {
   const otherStatusRef = ref(db, `status/${otherUser}`);
   onValue(otherStatusRef, (snapshot) => {
     const isOnline = snapshot.val();
-    if (isOnline) {
-      statusIndicator.textContent = "متصل الآن";
-      statusIndicator.className = "status-online";
-    } else {
-      statusIndicator.textContent = "غير متصل";
-      statusIndicator.className = "status-offline";
+    if (statusIndicator) {
+      if (isOnline) {
+        statusIndicator.textContent = "متصل الآن";
+        statusIndicator.className = "status-online";
+      } else {
+        statusIndicator.textContent = "غير متصل";
+        statusIndicator.className = "status-offline";
+      }
     }
   });
 
   const myTypingRef = ref(db, `typing/${currentUser}`);
   let typingTimeout;
 
-  messageInput.addEventListener("input", () => {
-    set(myTypingRef, true);
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-      set(myTypingRef, false);
-    }, 1500);
-  });
+  if (messageInput) {
+    messageInput.addEventListener("input", () => {
+      set(myTypingRef, true);
+      clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(() => {
+        set(myTypingRef, false);
+      }, 1500);
+    });
+  }
 
   window.addEventListener("beforeunload", () => {
     set(myTypingRef, false);
@@ -90,17 +97,22 @@ if (currentUser && isChatPage) {
   const otherTypingRef = ref(db, `typing/${otherUser}`);
   onValue(otherTypingRef, (snapshot) => {
     const isTyping = snapshot.val();
-    if (isTyping) {
-      typingIndicator.classList.remove("hidden");
-    } else {
-      typingIndicator.classList.add("hidden");
+    if (typingIndicator) {
+      if (isTyping) {
+        typingIndicator.classList.remove("hidden");
+      } else {
+        typingIndicator.classList.add("hidden");
+      }
     }
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    if (chatMessages) {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
   });
 
   const messagesRef = ref(db, "messages");
 
   const sendMessage = () => {
+    if (!messageInput) return;
     const text = messageInput.value.trim();
     if (!text) return;
 
@@ -119,19 +131,24 @@ if (currentUser && isChatPage) {
     set(myTypingRef, false);
   };
 
-  chatForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    sendMessage();
-  });
-
-  messageInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+  if (chatForm) {
+    chatForm.addEventListener("submit", (e) => {
       e.preventDefault();
       sendMessage();
-    }
-  });
+    });
+  }
+
+  if (messageInput) {
+    messageInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  }
 
   onValue(messagesRef, (snapshot) => {
+    if (!chatMessages) return;
     chatMessages.innerHTML = "";
     const data = snapshot.val();
     
@@ -190,6 +207,7 @@ if (currentUser && isChatPage) {
 }
 
 function escapeHtml(text) {
+  if (!text) return "";
   const map = {
     '&': '&amp;',
     '<': '&lt;',
@@ -198,5 +216,4 @@ function escapeHtml(text) {
     "'": '&#039;'
   };
   return text.replace(/[&<>"']/g, m => map[m]);
-        }
-    
+}
